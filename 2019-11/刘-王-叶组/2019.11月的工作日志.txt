@@ -1,0 +1,4 @@
+11.9
+The progress were reduced to the 0.
+
+Today, i try to install opencv-python on the raspiberry car. However, it could not be installed. I guess it is caused by the out-date-version of the python on the rasp. Hence, i remove the python 3.5.1 and tried to install the python 3.7.1. I failed, so i have to renew the whole system. It is a awful day.
