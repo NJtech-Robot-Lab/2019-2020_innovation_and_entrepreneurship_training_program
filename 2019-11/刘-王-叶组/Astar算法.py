@@ -36,16 +36,18 @@ def checkpoint(Bpoints,x,y,Apoints):
 def insert(x,y,ex,ey,Apoints):
     global endx
     global endy
-    newpoint={'x':ex,'y':ey,'H':math.sqrt(abs((x-ex)*10.0)**2+abs((y-ex)*10.0)**2),'P':abs(ex-endx)*10.0+abs(ey-endy)*10.0}
-    if len(Apoint)==0:
+    newpoint={'x':ex,'y':ey,'H':math.sqrt(abs((x-ex)*10.0)**2+abs((y-ey)*10.0)**2),'P':abs(ex-endx)*10.0+abs(ey-endy)*10.0,'use':1}
+    if len(Apoints)==0:
         Apoints.append(newpoint)
     fla=0
     for i in range(0,len(Apoints)):
-        if(Apoints[i]['x']==ex and Apoints[i]['y']==ey)#如果存在这个点的话
+        if(Apoints[i]['x']==ex and Apoints[i]['y']==ey):
+            #如果存在这个点的话
             fla=1#不需要插入
-            if(math.sqrt(abs((x-ex)*10.0)**2+abs((y-ex)*10.0)**2)+abs(ex-endx)*10.0+abs(ey-endy)*10.0<Apoints[i]['H']+Apoints[i]['P']):
-                   Apoints[i]['H']=math.sqrt(abs((x-ex)*10.0)**2+abs((y-ex)*10.0)**2)
+            if(math.sqrt(abs((x-ex)*10.0)**2+abs((y-ey)*10.0)**2)+abs(ex-endx)*10.0+abs(ey-endy)*10.0<Apoints[i]['H']+Apoints[i]['P']):
+                   Apoints[i]['H']=math.sqrt(abs((x-ex)*10.0)**2+abs((y-ey)*10.0)**2)
                    Apoints[i]['P']=abs(ex-endx)*10.0+abs(ey-endy)*10.0
+                   Apoints[i]['use']=1
     
     if(fla==0):#如果没找到
         Apoints.append(newpoint)
@@ -98,36 +100,43 @@ lastx=startx
 lasty=starty
 
 end_point={'x':endx,'y':endy,'value':1}
-
+cnt1=0
 while end_point in Bpoints:#如果终点还没有被走过,就进行循环
-    print('dosomething')
+    #print('dosomething')
     if len(Apoints)==0:#如果没有带测点，就结束
         flag=0
         break
-
+    cnt1=cnt1+1
+    #无线循环保护器
+    if cnt1==1000:
+        break
     #默认最好的点是Apoint中的第一个
-    minH=Apoints[0]['H']+Apoints[0]['P']
-    minx=Apoints[0]['x']
-    miny=Apoints[0]['y']
+    minH=1000000000.000
+    minx=-1
+    miny=-1
 
     for point in Apoints:#遍历所有的A中的点，找出最好的点
-        if minH<point['H']+point['H']:
+        if minH>point['H']+point['P']and point['use']==1:
             minx=point['x']
             miny=point['y']
             minH=point['H']+point['P']
+
+    print(Apoints)
+    print(minx)
+    print(miny)
+    print(minH)
     
     #从A中去掉这个点
     cnt=len(Apoints)
     for i in range(0,cnt):
-        if Apoints[i]['x']==minx and Apoints[i]['y']==miny and Apoints[i]['H']+Apoints[i]['P']==minH:
-            del Apoints[i]
+        if Apoints[i]['x']==minx and Apoints[i]['y']==miny:
+            Apoints[i]['use']=0
             break
         
     checkpoint(Bpoints,minx,miny,Apoints)#查询最优点的周围的点
 
     #接着把minx,miny从B点去掉,并且令这个点的父节点为上一次的最佳节点
     setbound(Bpoints,minx,miny)
-    
     new_point={'x':minx,'y':miny,'fx':lastx,'fy':lasty}
     las=0
     if(len(tree)==0):
