@@ -2,6 +2,8 @@ import math
 #本地图使用一个装着点的列表来表示整张地图
 points=[]
 
+tree=[]#用这个列表装最终的查询结果
+
 #运动方向的元组
 direct=([1,0],[0,1],[0,-1],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1])
 
@@ -35,8 +37,20 @@ def insert(x,y,ex,ey,Apoints):
     global endx
     global endy
     newpoint={'x':ex,'y':ey,'H':math.sqrt(abs((x-ex)*10.0)**2+abs((y-ex)*10.0)**2),'P':abs(ex-endx)*10.0+abs(ey-endy)*10.0}
-    Apoints.append(newpoint)
-
+    if len(Apoint)==0:
+        Apoints.append(newpoint)
+    fla=0
+    for i in range(0,len(Apoints)):
+        if(Apoints[i]['x']==ex and Apoints[i]['y']==ey)#如果存在这个点的话
+            fla=1#不需要插入
+            if(math.sqrt(abs((x-ex)*10.0)**2+abs((y-ex)*10.0)**2)+abs(ex-endx)*10.0+abs(ey-endy)*10.0<Apoints[i]['H']+Apoints[i]['P']):
+                   Apoints[i]['H']=math.sqrt(abs((x-ex)*10.0)**2+abs((y-ex)*10.0)**2)
+                   Apoints[i]['P']=abs(ex-endx)*10.0+abs(ey-endy)*10.0
+    
+    if(fla==0):#如果没找到
+        Apoints.append(newpoint)
+                   
+   
     
 #输入地图的宽度和长度
 x=input('请输入地图宽度')
@@ -76,36 +90,69 @@ Apoints=[]
 #表示等待搜索的点集
 Bpoints=points
 flag=1
+
+
 checkpoint(Bpoints,startx,starty,Apoints)#查询第一个点
+setbound(Bpoints,startx,starty)
+lastx=startx
+lasty=starty
 
 end_point={'x':endx,'y':endy,'value':1}
 
 while end_point in Bpoints:#如果终点还没有被走过,就进行循环
+    print('dosomething')
     if len(Apoints)==0:#如果没有带测点，就结束
         flag=0
         break
+
+    #默认最好的点是Apoint中的第一个
     minH=Apoints[0]['H']+Apoints[0]['P']
     minx=Apoints[0]['x']
     miny=Apoints[0]['y']
+
     for point in Apoints:#遍历所有的A中的点，找出最好的点
         if minH<point['H']+point['H']:
             minx=point['x']
             miny=point['y']
             minH=point['H']+point['P']
+    
     #从A中去掉这个点
     cnt=len(Apoints)
     for i in range(0,cnt):
         if Apoints[i]['x']==minx and Apoints[i]['y']==miny and Apoints[i]['H']+Apoints[i]['P']==minH:
             del Apoints[i]
             break
+        
     checkpoint(Bpoints,minx,miny,Apoints)#查询最优点的周围的点
-    #接着把minx,miny从B点去掉
+
+    #接着把minx,miny从B点去掉,并且令这个点的父节点为上一次的最佳节点
     setbound(Bpoints,minx,miny)
+    
+    new_point={'x':minx,'y':miny,'fx':lastx,'fy':lasty}
+    las=0
+    if(len(tree)==0):
+        tree.append(new_point)
+        las=1
+    else:
+        for i in range(0,len(tree)):
+            if(tree[i]['x']==minx and tree[i]['y']==miny):
+                #print('进行了覆盖')
+                tree[i]['fx']=lastx
+                tree[i]['fy']=lasty
+                las=1
+                break
+    if(las==0):
+        tree.append(new_point)
+    lastx=minx
+    lasty=miny
     
         
         
 if flag==0:
     print('并不存在路径')
+for i in range(1,len(tree)):
+    if tree[i]['x']==4 and tree[i]['y']==4:
+        print(tree[i])
 
-print(points)
+print(tree)
 print('成功运行')
