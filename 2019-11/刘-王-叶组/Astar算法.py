@@ -121,10 +121,10 @@ while end_point in Bpoints:#如果终点还没有被走过,就进行循环
             miny=point['y']
             minH=point['H']+point['P']
 
-    print(Apoints)
-    print(minx)
-    print(miny)
-    print(minH)
+    #print(Apoints)
+   # print(minx)
+   # print(miny)
+   # print(minH)
     
     #从A中去掉这个点
     cnt=len(Apoints)
@@ -159,9 +159,12 @@ while end_point in Bpoints:#如果终点还没有被走过,就进行循环
         
 if flag==0:
     print('并不存在路径')
-for i in range(1,len(tree)):
-    if tree[i]['x']==4 and tree[i]['y']==4:
-        print(tree[i])
+#for i in range(1,len(tree)):
+ #   if tree[i]['x']==4 and tree[i]['y']==4:
+  #      print(tree[i])
 
-print(tree)
+print('寻找到的路径如下')
+print(str(startx)+'   '+str(starty))
+for tre in tree:
+    print(str(tre['x'])+'   '+str(tre['y']))
 print('成功运行')
