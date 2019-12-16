@@ -164,7 +164,23 @@ if flag==0:
   #      print(tree[i])
 
 print('寻找到的路径如下')
-print(str(startx)+'   '+str(starty))
-for tre in tree:
-    print(str(tre['x'])+'   '+str(tre['y']))
-print('成功运行')
+#答案在tree里面
+
+nowx=endx
+nowy=endy
+endlist=[]
+while nowx!=startx and nowy!=starty:
+    for tr in tree:#遍历当中所有的元素
+        #找到某个节点，然后记录它的父节点
+        if tr['x']==nowx and tr['y']==nowy:
+            now_point=[nowx,nowy]
+            endlist.append(now_point)
+            nowx=tr['fx']
+            nowy=tr['fy']
+endlist.append([startx,starty])
+endlist.reverse()
+print('最终寻找的路径为')
+for en in endlist:
+    print(str(en[0])+'   '+str(en[1]))
+            
+    
