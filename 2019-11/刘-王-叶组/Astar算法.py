@@ -142,16 +142,21 @@ while end_point in Bpoints:#如果终点还没有被走过,就进行循环
 tempx=endx
 tempy=endy
 #print(str(tempx)+' '+str(tempy)+' '+str(startx)+'  '+str(starty))
+out=[]
 while tempx!=startx or tempy!=starty:
     #print('1')
     for i in range(0,len(Apoints)):
         #print('2')
         if tempx==Apoints[i]['x'] and tempy==Apoints[i]['y']:
-            print(str(Apoints[i]['x'])+str(Apoints[i]['y']))
+            newp=[tempx,tempy]
+            out.append(newp)
             #print('run')
             tempx=Apoints[i]['fx']
             tempy=Apoints[i]['fy']
             break
+out.append([startx,starty])
+out.reverse()
+print(out)
 #print('1')                   
         
         
