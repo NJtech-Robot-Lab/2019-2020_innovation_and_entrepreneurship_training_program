@@ -36,7 +36,8 @@ def checkpoint(Bpoints,x,y,Apoints):
 def insert(x,y,ex,ey,Apoints):
     global endx
     global endy
-    newpoint={'x':ex,'y':ey,'H':math.sqrt(abs((x-ex)*10.0)**2+abs((y-ey)*10.0)**2),'P':abs(ex-endx)*10.0+abs(ey-endy)*10.0,'use':1}
+#设置每个点的fx，fy
+    newpoint={'x':ex,'y':ey,'H':math.sqrt(abs((x-ex)*10.0)**2+abs((y-ey)*10.0)**2),'P':abs(ex-endx)*10.0+abs(ey-endy)*10.0,'use':1,'fx':x,'fy':y}
     if len(Apoints)==0:
         Apoints.append(newpoint)
     fla=0
@@ -48,7 +49,9 @@ def insert(x,y,ex,ey,Apoints):
                    Apoints[i]['H']=math.sqrt(abs((x-ex)*10.0)**2+abs((y-ey)*10.0)**2)
                    Apoints[i]['P']=abs(ex-endx)*10.0+abs(ey-endy)*10.0
                    Apoints[i]['use']=1
-    
+                   Apoints[i]['fx']=x
+                   Apoints[i]['fy']=y
+            break
     if(fla==0):#如果没找到
         Apoints.append(newpoint)
                    
@@ -133,54 +136,24 @@ while end_point in Bpoints:#如果终点还没有被走过,就进行循环
             Apoints[i]['use']=0
             break
         
-    checkpoint(Bpoints,minx,miny,Apoints)#查询最优点的周围的点
-
+    checkpoint(Bpoints,minx,miny,Apoints)#查询最优点的周围的点,并把合适的点都放入A
     #接着把minx,miny从B点去掉,并且令这个点的父节点为上一次的最佳节点
     setbound(Bpoints,minx,miny)
-    new_point={'x':minx,'y':miny,'fx':lastx,'fy':lasty}
-    las=0
-    if(len(tree)==0):
-        tree.append(new_point)
-        las=1
-    else:
-        for i in range(0,len(tree)):
-            if(tree[i]['x']==minx and tree[i]['y']==miny):
-                #print('进行了覆盖')
-                tree[i]['fx']=lastx
-                tree[i]['fy']=lasty
-                las=1
-                break
-    if(las==0):
-        tree.append(new_point)
-    lastx=minx
-    lasty=miny
-    
+tempx=endx
+tempy=endy
+#print(str(tempx)+' '+str(tempy)+' '+str(startx)+'  '+str(starty))
+while tempx!=startx or tempy!=starty:
+    #print('1')
+    for i in range(0,len(Apoints)):
+        #print('2')
+        if tempx==Apoints[i]['x'] and tempy==Apoints[i]['y']:
+            print(str(Apoints[i]['x'])+str(Apoints[i]['y']))
+            #print('run')
+            tempx=Apoints[i]['fx']
+            tempy=Apoints[i]['fy']
+            break
+#print('1')                   
         
         
-if flag==0:
-    print('并不存在路径')
-#for i in range(1,len(tree)):
- #   if tree[i]['x']==4 and tree[i]['y']==4:
-  #      print(tree[i])
 
-print('寻找到的路径如下')
-#答案在tree里面
-
-nowx=endx
-nowy=endy
-endlist=[]
-while nowx!=startx and nowy!=starty:
-    for tr in tree:#遍历当中所有的元素
-        #找到某个节点，然后记录它的父节点
-        if tr['x']==nowx and tr['y']==nowy:
-            now_point=[nowx,nowy]
-            endlist.append(now_point)
-            nowx=tr['fx']
-            nowy=tr['fy']
-endlist.append([startx,starty])
-endlist.reverse()
-print('最终寻找的路径为')
-for en in endlist:
-    print(str(en[0])+'   '+str(en[1]))
-            
     
